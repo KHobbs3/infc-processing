@@ -1,0 +1,19 @@
+{ 
+    "filename": "surfaces_rue_et_transport_actif.shp",
+    "filetype": "shp",
+    "class": ["walking", "biking"],
+    "prov/terr": "force:qc",
+    "municipality": "force:Laval",
+    "provider": "force:Ville de Laval",
+    "source_url": "force:https://www.donneesquebec.ca/recherche/dataset/pistes-cyclables-et-pietonnieres",
+    "licence": "force:https://www.donneesquebec.ca/fr/licence/#cc-by",
+    "schema": {
+        "infrastructure": {
+          "surface_type": "REVETEMENT"  
+},
+         "address": {
+            "street_name": "ODONYME",
+            "geometry": "geometry"
+        }
+    }
+}

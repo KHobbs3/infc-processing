@@ -1,0 +1,14 @@
+﻿Province/Territory,Standard_abbreviations,Alpha_codes,SGC_code,Region
+Newfoundland and Labrador,N.L./T.-N.-L.,NL,10,Atlantic
+Prince Edward Island,P.E.I./Î.-P.-É.,PE,11,Atlantic
+Nova Scotia,N.S./N.-É.,NS,12,Atlantic
+New Brunswick,N.B./N.-B.,NB,13,Atlantic
+Quebec,Que./Qc,QC,24,Quebec
+Ontario,Ont./Ont.,ON,35,Ontario
+Manitoba,Man./Man.,MB,46,Prairies
+Saskatchewan,Sask./Sask.,SK,47,Prairies
+Alberta,Alta./Alb.,AB,48,Prairies
+British Columbia,B.C./C.-B.,BC,59,British Columbia
+Yukon,Y.T./Yn,YT,60,Territories
+Northwest Territories,N.W.T./T.N.-O.,NT,61,Territories
+Nunavut,Nvt./Nt,NU,62,Territories

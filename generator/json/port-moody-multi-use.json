@@ -1,0 +1,26 @@
+{ 
+    "filename": "Pathways.shp",
+    "filetype": "shp",
+    "class": ["walking", "biking"],
+    "separate": {
+           "filter_column": "Status",
+           "filter_value": "OPERATIONAL"
+},
+    "prov/terr": "force:bc",
+    "municipality": "force:Port Moody",
+    "provider": "force:City of Port Moody",
+    "source_url": "force:https://data.portmoody.ca/datasets/9f3aa5c190924e6dafad7cb588716c70_46/explore?showTable=true",
+    "licence": "force:https://data.portmoody.ca/datasets/63aa875df2b140729fde77f11776a56a_0/explore",
+    "schema": {
+        "infrastructure": {
+          "source_id": "OBJECTID",
+          "source_class": "class",
+          "surface_type": "material",
+          "width": "width"  
+},
+         "address": {
+            "street_name": "location",
+            "geometry": "geometry"
+        }
+    }
+}
