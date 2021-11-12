@@ -28,7 +28,7 @@ with open(jsonFile, "r") as f:
 # Path to files --- SUBJECT TO CHANGE WITH VAR MAP
 reg = srcmap['prov/terr'].split(":")[1].upper()
 foldername = "{} - {}".format(codeConverter(reg), reg.upper())
-fpath = "input/{}/{}/".format(foldername, srcmap['municipality'].replace(' ', '').split(":")[1].title())
+fpath = "input/{}/{}/".format(foldername, srcmap['municipality'].title().replace(' ', '').split(":")[1])
 
 
 # Read file according to file type and convert to GeoDataFrame
@@ -53,24 +53,41 @@ else:
 
 
 # Rename columns according to schema
-gdf.rename(columns = srcmap['schema']['infrastructure'], inplace = True)
-gdf.rename(columns = srcmap['schema']['address'], inplace = True)
+cols_dict = {v: k for k, v in srcmap['schema'].items()}
+gdf.rename(columns = cols_dict, inplace = True)
 
 
 # Set forced columns as fixed values
 for key, value in srcmap.items():
-    if _isForceValue(value):
-        gdf[key] = value.split(':')[1]
+    try:
+        if isForceValue(value):
+            try:
+                gdf[key] = value.split(':')[1] + value.split(':')[2]
+            except IndexError:
+                gdf[key] = value.split(':')[1]
+    except TypeError:
+        continue
 
 # filter data
-# df.query['%' % df[srcmap['separate']['filter_column']] srcmap['separate']['filter_value']]
+    #TODO: update logic based on variablemap.csv ----
+if srcmap['separate']:
+    gdf.query('{} == {}'\
+              .format(srcmap['separate']['filter_column'], srcmap['separate']['filter_value']),
+                  inplace = True)
 
-# repeat rows for class columns?
-# if type(srcmap['class']) == list():
-#     # TODO: duplicate entire data set?
-# else:
-#     df['class'] = srcmap['class']
+
+# Drop unnessary columns
+gdf = drop_cols(srcmap, gdf)
+
+
+# Add class column
+if type(srcmap['class']) == list():
+    # TODO: duplicate entire data set? ----
+else:
+    df['class'] = srcmap['class']
 
 
 # Export as GeoJSON
-df.to_file('output/%.geojson' % jsonFile.strip('.')[0], driver = "GeoJSON", index = False)
+    #TODO: find better way to name out files ----
+gdf.to_file('output/{}.json'.format(jsonFile.split("/")[3].split('.')[0]), driver = "GeoJSON", index = False)
+print("Done.")

@@ -12,8 +12,7 @@ import csv
 
 
 def main():
-    infraFields = ['source_id', 'source_class', 'surface_type', 'width']
-    addressFields = ['street_name', 'geometry']
+    infraFields = ['source_id', 'source_class', 'surface_type', 'width', 'street_name', 'geometry']
     forceFields = ['prov/terr', 'municipality', 'provider', 'source_url', 'licence']
     input_file = csv.DictReader(open('variablemap.csv'))
 
@@ -48,19 +47,14 @@ def main():
         force = False
 
         for f in forceFields:
-            # if row[f] != '':
-            #     if first:
-                    # OP.write('    "'+ f +'": "force:' + row[f] + '"')
-                    # first = False
-                # else:
             OP.write('    "'+ f +'": "force:' + row[f] + '"')
             OP.write(',\n')
 
             force = True
 
         OP.write('    "schema": {\n')
-        # Infrastructure fields ------
-        OP.write('        "infrastructure": {\n')
+
+        # Infrastructure & address fields ------
         for f in infraFields:
             if row[f] != '':
                 if first:
@@ -70,33 +64,8 @@ def main():
                 OP.write('          "'+ f +'": "' + row[f] + '"')
                 other = True
 
-        OP.write('  \n}')
-
-        if not first:
-            OP.write(',\n')
-        add = False
-
-        # Address fields --------
-        for f in addressFields:
-            if row[f] != '':
-                add = True
-        if add:
-            # if other or force:
-                # OP.write(',\n')
-            OP.write('         "address": {\n')
-            first = True
-
-            for f in addressFields:
-                if row[f] != '':
-                    if first:
-                        first = False
-                    else:
-                        OP.write(',\n')
-                    OP.write('            "'+ f + '": "' + row[f] + '"')
-            OP.write('\n        }\n')
-        OP.write('    }\n')
-
-        OP.write('}')
+        OP.write('  \n}\n') # close schema
+        OP.write('}') # close file
         OP.close()
 
 if __name__ == "__main__":
