@@ -89,5 +89,5 @@ else:
 
 # Export as GeoJSON
     #TODO: find better way to name out files ----
-gdf.to_file('output/{}.json'.format(jsonFile.split("/")[3].split('.')[0]), driver = "GeoJSON", index = False)
+gdf.to_file('output/{}.json'.format(jsonFile.split("/")[3].split('.')[0]))
 print("Done.")
