@@ -9,64 +9,56 @@ File organization:
 """
 
 import csv
+import json
 
 
 def main():
-    infraFields = ['source_id', 'source_class', 'surface_type', 'width', 'street_name', 'geometry']
-    forceFields = ['prov/terr', 'municipality', 'provider', 'source_url', 'licence']
-    input_file = csv.DictReader(open('variablemap.csv'))
+    infraFields = ['source_id', 'source_class', 'surface_type', 'width',
+                   'street_name', 'geometry', 'geom_type'] # Info fields for feature
+    forceFields = ['prov/terr', 'municipality', 'provider',
+                   'source_url', 'licence'] # Forced for all features in data source
+    filterFields = ['inscope_filter', 'inscope_value', 'bike_column', 'bike_value',
+                    'walk_column', 'walk_value', 'multi_column', 'multi_value'] # Fields to filter by
+    input_file = csv.DictReader(open('NS_variablemap.csv')) ## Change varmap per province/territory
 
-    for row in input_file:
-        if row['subclass'] != "":
-                OP = open("json/" + row['municipality'].lower().replace(' ', '-')
-                                + "-" + row['class'].lower()
-                                + "-" + row['subclass'].lower()
-                                + ".json","w")
+    for row in input_file: # Each row is a data source
+        if row['subclass'] != "":  # Add subclass to output filename if exists
+            OP = open(f"json/{row['prov/terr']}/{row['municipality'].lower().replace(' ', '-')}"
+                      f"-{row['subclass'].lower()}.json", "w")
         else:
-                OP = open("json/" + row['municipality'].lower().replace(' ', '-')
-                                + "-" + row['class'].lower()
-                                + ".json","w")
+            OP = open(f"json/{row['prov/terr']}/{row['municipality'].lower().replace(' ', '-')}"
+                      f"-{row['class'].lower()}.json", "w")
+            
+         # Dictionaries for filter, force, schema json fields
+        filtdict = {}
+        forcedict = {}
+        schemadict = {} 
 
-        # General information -----
-        OP.write('{ \n')
-        OP.write('    "filename": "' + row['file_name'] + '.' + row['format'] + '",\n')
-        OP.write('    "filetype": "' + row['format'] + '",\n')
-
-        if row['class'] == 'multi-use':
-            OP.write('    "class": ' + '["walking", "biking"],\n')
-        else:
-            OP.write('    "class": "' + row['class'] + '",\n')
-
-        if row['filter_exclude'] != "":
-            OP.write('    "separate": {\n' +
-                    '           "filter_column": "' + row['filter_exclude'] + '",\n'
-                    '           "filter_value": "' + row['filter_value'] + '"\n' +
-                        '},\n')
-        first = True
-        other = False
-        force = False
-
+        # Only adding k,v pairs that are not blank
+        for f in filterFields:
+            if row[f] != '':
+                filtdict[f] = row[f]
         for f in forceFields:
-            OP.write('    "'+ f +'": "force:' + row[f] + '"')
-            OP.write(',\n')
-
-            force = True
-
-        OP.write('    "schema": {\n')
-
-        # Infrastructure & address fields ------
+            if row[f] != '':
+                forcedict[f] = row[f]
         for f in infraFields:
             if row[f] != '':
-                if first:
-                    first = False
-                else:
-                    OP.write(',\n')
-                OP.write('          "'+ f +'": "' + row[f] + '"')
-                other = True
+                schemadict[f] = row[f]
 
-        OP.write('  \n}\n') # close schema
-        OP.write('}') # close file
+        jsondict = {
+            "filename": f"{row['file_name']}.{row['format']}",
+            "filetype": row['format'],
+            "class": row['class'],
+            "filter": filtdict,
+            "force": forcedict,
+            "schema": schemadict
+        }  
+        
+        # Create the dictionary for the json output
+        json_data = json.dumps(jsondict, indent=4)  # Formatting
+        OP.write(json_data)  # Write to json
         OP.close()
+
 
 if __name__ == "__main__":
     main()
