@@ -1,0 +1,20 @@
+{
+    "filename": "geo_export_4d247d16-47e5-416a-b833-60827b73fff8.shp",
+    "filetype": "shp",
+    "class": "multi-use",
+    "filter": {},
+    "force": {
+        "prov/terr": "ab",
+        "municipality": "Calgary",
+        "provider": "City of Calgary",
+        "source_url": "https://data.calgary.ca/api/geospatial/tfmd-grpe?method=export&format=Shapefile",
+        "licence": "https://data.calgary.ca/stories/s/Open-Calgary-Terms-of-Use/u45n-7awa"
+    },
+    "schema": {
+        "source_id": "trail_id",
+        "source_class": "type_descr",
+        "surface_type": "material",
+        "geometry": "geometry",
+        "geom_type": "linestring"
+    }
+}

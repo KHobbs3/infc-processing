@@ -1,0 +1,21 @@
+{
+    "filename": "Airdrie_Pathway.shp",
+    "filetype": "shp",
+    "class": "multi-use",
+    "filter": {},
+    "force": {
+        "prov/terr": "ab",
+        "municipality": "Airdrie",
+        "provider": "City of Airdrie",
+        "source_url": "https://data-airdrie.opendata.arcgis.com/datasets/airdrie::airdrie-pathway/about",
+        "licence": "https://data-airdrie.opendata.arcgis.com/pages/our-open-licence"
+    },
+    "schema": {
+        "source_id": "FID",
+        "source_class": "Class",
+        "surface_type": "Material",
+        "width": "Width_m",
+        "geometry": "geometry",
+        "geom_type": "linestring"
+    }
+}

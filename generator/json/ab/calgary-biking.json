@@ -1,0 +1,23 @@
+{
+    "filename": "Calgary_Bikeways.csv",
+    "filetype": "csv",
+    "class": "biking",
+    "filter": {
+        "inscope_filter": "STATUS",
+        "inscope_value": "EXISTING",
+        "bike_column": "BICYCLE_CLASS",
+        "bike_value": "On-Street Bikeway__Shared Lane__Bicycle Lane__Cycle Track__Neighbourhood Greenway"
+    },
+    "force": {
+        "prov/terr": "ab",
+        "municipality": "Calgary",
+        "provider": "City of Calgary",
+        "source_url": "https://data.calgary.ca/api/views/jjqk-9b73/rows.csv?accessType=DOWNLOAD",
+        "licence": "https://data.calgary.ca/stories/s/Open-Calgary-Terms-of-Use/u45n-7awa"
+    },
+    "schema": {
+        "source_class": "BICYCLE_CLASS",
+        "geometry": "MULTILINESTRING",
+        "geom_type": "multilinestring"
+    }
+}

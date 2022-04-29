@@ -54,7 +54,24 @@ export_dict = {
 }
 
 
-def multi(jsonFile, sourcemap, geodataframe):
+def contains_func(v, geodataframe, k):
+    """
+    When filtering using str.contains.
+
+    v = value from sourcemap filter value.
+    k = value from sourcemap filter column.
+    """
+    if isinstance(v,list):  # Seems to be better than type(x) == y
+        v = [x.split("Contains ")[1] for x in v]
+        return geodataframe.loc[geodataframe[k].fillna("").str.contains("|".join(v), case = False)]
+        
+    else:
+        v = v.split("Contains ")[1]
+        return geodataframe.loc[geodataframe[k].fillna("").str.contains(v, case = False)]
+
+
+
+def multi(jsonFile, sourcemap, geodataframe, log):
     """
     Filters geodataframe with a "multi-use" class
     according to walking, biking, multi column filters, if filled.
@@ -73,59 +90,83 @@ def multi(jsonFile, sourcemap, geodataframe):
 
                 # Filter & export subsets
                 if export_dict[key] == "walking":
+                    
                     # Filter by several or one value(s)
                     if "__" in v:
-                        v = v.split("__")
-                        walking = geodataframe.loc[geodataframe[k].map(lambda x: x in v)]
+                        if "contains" in v.lower():
+                            v = v.split("__")
+                            walking = contains_func(v, geodataframe, k)
+                        else:
+                            v = v.split("__")
+                            walking = geodataframe.loc[geodataframe[k].fillna("").map(lambda x: x in v)]
+
                     elif "contains" in v.lower():
-                        v = v.lower().split("contains ")[1]
-                        walking = geodataframe[k].str.contains(v)
+                        walking = contains_func(v, geodataframe, k)
 
                     else:
-                        walking = geodataframe.loc[geodataframe[k].map(lambda x: x == v)]
+                        walking = geodataframe.loc[geodataframe[k].fillna("").map(lambda x: x == v)]
 
                     print("Exporting filtered walking data...")
-                    process_columns(sourcemap, walking, new_class = "walking")\
-                        .to_file(f'output/walking/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
+                    walking_out = process_columns(sourcemap, walking, new_class = "walking")
+                    walking_out.to_file(f'output/walking/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
+                    
+                    # Log
+#                     log['output_length'].append(len(walking_out))
+
 
                 elif export_dict[key] == "biking":
 
                     # Filter by several or one value(s)
                     if "__" in v:
-                        v = v.split("__")
-                        biking = geodataframe.loc[geodataframe[k].map(lambda x: x in v)]
+                        if "contains" in v.lower():
+                            v = v.split("__")
+                            biking = contains_func(v, geodataframe, k)
+                        else:
+                            v = v.split("__")
+                            biking = geodataframe.loc[geodataframe[k].fillna("").map(lambda x: x in v)]
 
                     elif "contains" in v.lower():
-                        v = v.lower().split("contains ")[1]
-                        biking = geodataframe[k].str.contains(v)
+                        biking = contains_func(v, geodataframe, k)
 
                     else:
-                        biking = geodataframe.loc[geodataframe[k].map(lambda x: x == v)]
+                        biking = geodataframe.loc[geodataframe[k].fillna("").map(lambda x: x == v)]
 
                     print("Exporting filtered biking data...")
-                    process_columns(sourcemap, biking, new_class = "biking")\
-                        .to_file(f'output/biking/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
+                    biking_out = process_columns(sourcemap, biking, new_class = "biking")
+                    biking_out.to_file(f'output/biking/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
 
+                    # Log
+#                     log['output_length'].append(len(biking_out))
+                    
                 elif export_dict[key] == "multi":
                     print("Exporting filtered multi data...")
 
                     # Filter by several or one value(s)
                     if "__" in v:
-                        v = v.split("__")
-                        multi = geodataframe.loc[geodataframe[k].map(lambda x: x in v)]
+                        if "contains" in v.lower():
+                            v = v.split("__")
+                            multi = contains_func(v, geodataframe, k)
+                        else:
+                            v = v.split("__")
+                            multi = geodataframe.loc[geodataframe[k].fillna("").map(lambda x: x in v)]
 
                     elif "contains" in v.lower():
-                        v = v.lower().split("contains ")[1]
-                        multi = geodataframe[k].str.contains(v)
+                        multi = contains_func(v, geodataframe, k)
 
                     else:
-                        multi = geodataframe.loc[geodataframe[k].map(lambda x: x == v)]
+                        multi = geodataframe.loc[geodataframe[k].fillna("").map(lambda x: x == v)]
 
 
-                    process_columns(sourcemap, multi, new_class = "multi-use")\
-                        .to_file(f'output/multi/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
-
+                    multi_out = process_columns(sourcemap, multi, new_class = "multi-use")
+                    multi_out.to_file(f'output/multi-use/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
+                    
+                    # Log
+#                     log['output_length'].append(len(multi_out))
     else:
         print("Exporting multi data...")
-        process_columns(sourcemap, geodataframe, new_class = "multi-use")\
-            .to_file(f'output/multi/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
+        multi_out = process_columns(sourcemap, geodataframe, new_class = "multi-use")
+        multi_out.to_file(f'output/multi-use/{jsonFile.split("/")[-1].split(".")[0]}.geojson', driver="GeoJSON")
+                            
+        # Log
+#         log['output_length'].append(len(multi_out))
+            
